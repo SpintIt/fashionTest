@@ -1,0 +1,901 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Laravel CRUD API Documentation",
+        "description": "API for managing users, posts, and comments",
+        "contact": {
+            "email": "support@example.com"
+        },
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Аутентификация пользователя",
+                "operationId": "loginUser",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/LoginRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Вход выполнен успешно",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "access_token": {
+                                            "description": "JWT access token",
+                                            "type": "string"
+                                        },
+                                        "token_type": {
+                                            "type": "string",
+                                            "example": "Bearer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Неверные учетные данные"
+                    }
+                }
+            }
+        },
+        "/api/register": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Регистрация нового пользователя",
+                "operationId": "registerUser",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RegisterRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Пользователь успешно зарегистрирован",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "access_token": {
+                                            "description": "JWT access token",
+                                            "type": "string"
+                                        },
+                                        "token_type": {
+                                            "type": "string",
+                                            "example": "Bearer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/comments": {
+            "get": {
+                "tags": [
+                    "Comments"
+                ],
+                "summary": "Получить список всех комментариев",
+                "operationId": "getCommentsList",
+                "responses": {
+                    "200": {
+                        "description": "Список комментариев успешно получен",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/CommentResource"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Comments"
+                ],
+                "summary": "Создать комментарий (запрещено)",
+                "operationId": "storeComment",
+                "responses": {
+                    "403": {
+                        "description": "Запрещено"
+                    }
+                }
+            }
+        },
+        "/api/comments/{comment}": {
+            "get": {
+                "tags": [
+                    "Comments"
+                ],
+                "summary": "Получить комментарий по ID",
+                "operationId": "getCommentById",
+                "parameters": [
+                    {
+                        "name": "comment",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Комментарий успешно найден",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CommentResource"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Комментарий не найден"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Comments"
+                ],
+                "summary": "Обновить существующий комментарий",
+                "operationId": "updateComment",
+                "parameters": [
+                    {
+                        "name": "comment",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateCommentRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Комментарий успешно обновлен",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CommentResource"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Запрещено"
+                    },
+                    "404": {
+                        "description": "Комментарий не найден"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Comments"
+                ],
+                "summary": "Удалить комментарий",
+                "operationId": "deleteComment",
+                "parameters": [
+                    {
+                        "name": "comment",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Комментарий успешно удален"
+                    },
+                    "403": {
+                        "description": "Запрещено"
+                    },
+                    "404": {
+                        "description": "Комментарий не найден"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/comments/{post}/posts": {
+            "get": {
+                "tags": [
+                    "Comments"
+                ],
+                "summary": "Получить комментарии для поста",
+                "operationId": "getCommentsByPost",
+                "parameters": [
+                    {
+                        "name": "post",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Список комментариев успешно получен",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/CommentResource"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Пост не найден"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Comments"
+                ],
+                "summary": "Добавить комментарий к посту",
+                "operationId": "storeCommentToPost",
+                "parameters": [
+                    {
+                        "name": "post",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreCommentRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Комментарий успешно добавлен",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CommentResource"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/comments/{comment}/comments": {
+            "post": {
+                "tags": [
+                    "Comments"
+                ],
+                "summary": "Ответить на комментарий",
+                "operationId": "storeCommentToComment",
+                "parameters": [
+                    {
+                        "name": "comment",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreCommentRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Ответ успешно добавлен",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CommentResource"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/comments/{user}/users/active": {
+            "get": {
+                "tags": [
+                    "Comments"
+                ],
+                "summary": "Получить комментарии к активным постам пользователя",
+                "operationId": "getCommentsForActivePostsByUser",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Список комментариев успешно получен",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/CommentResource"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Пользователь не найден"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/comments/my/all": {
+            "get": {
+                "tags": [
+                    "Comments"
+                ],
+                "summary": "Получить все комментарии текущего аутентифицированного пользователя",
+                "operationId": "getMyComments",
+                "responses": {
+                    "200": {
+                        "description": "Список комментариев успешно получен",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/CommentResource"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Не авторизован"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/comments/{comment}/replies": {
+            "get": {
+                "tags": [
+                    "Comments"
+                ],
+                "summary": "Получить ответы на комментарий",
+                "operationId": "getRepliesToComment",
+                "parameters": [
+                    {
+                        "name": "comment",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Список ответов успешно получен",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/CommentResource"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Комментарий не найден"
+                    }
+                }
+            }
+        },
+        "/api/posts": {
+            "get": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Получить список всех постов",
+                "operationId": "getPostsList",
+                "responses": {
+                    "200": {
+                        "description": "Список постов успешно получен",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/PostResource"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Создать новый пост",
+                "operationId": "createPost",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StorePostRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Пост успешно создан",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PostResource"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Не авторизован"
+                    }
+                }
+            }
+        },
+        "/api/posts/{id}": {
+            "get": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Получить пост по ID",
+                "operationId": "getPostById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Пост успешно найден",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PostResource"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Пост не найден"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Обновить существующий пост",
+                "operationId": "updatePost",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdatePostRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Пост успешно обновлен",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PostResource"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Запрещено"
+                    },
+                    "404": {
+                        "description": "Пост не найден"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Удалить пост",
+                "operationId": "deletePost",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Пост успешно удален"
+                    },
+                    "403": {
+                        "description": "Запрещено"
+                    },
+                    "404": {
+                        "description": "Пост не найден"
+                    }
+                }
+            }
+        },
+        "/api/users/{id}/active-posts": {
+            "get": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Получить список активных постов пользователя по его ID",
+                "operationId": "getActivePostsByUser",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Список активных постов успешно получен",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/PostResource"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Пользователь не найден"
+                    }
+                }
+            }
+        },
+        "/api/my-posts": {
+            "get": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Получить список постов текущего аутентифицированного пользователя",
+                "operationId": "getMyPosts",
+                "responses": {
+                    "200": {
+                        "description": "Список постов успешно получен",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/PostResource"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Не авторизован"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "LoginRequest": {
+                "title": "Login Request",
+                "description": "Request body for user login",
+                "required": [
+                    "email",
+                    "password"
+                ],
+                "properties": {
+                    "email": {
+                        "description": "User's email",
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "password": {
+                        "description": "User's password",
+                        "type": "string",
+                        "format": "password"
+                    }
+                },
+                "type": "object"
+            },
+            "RegisterRequest": {
+                "title": "Register Request",
+                "description": "Request body for user registration",
+                "required": [
+                    "name",
+                    "email",
+                    "password",
+                    "password_confirmation"
+                ],
+                "properties": {
+                    "name": {
+                        "description": "User's name",
+                        "type": "string"
+                    },
+                    "email": {
+                        "description": "User's email",
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "password": {
+                        "description": "User's password",
+                        "type": "string",
+                        "format": "password"
+                    },
+                    "password_confirmation": {
+                        "description": "Password confirmation",
+                        "type": "string",
+                        "format": "password"
+                    }
+                },
+                "type": "object"
+            },
+            "CommentResource": {
+                "title": "Comment Resource",
+                "description": "Comment resource model",
+                "properties": {
+                    "id": {
+                        "description": "ID of the comment",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "body": {
+                        "description": "The body of the comment",
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "description": "Creation timestamp",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "StoreCommentRequest": {
+                "title": "Store Comment Request",
+                "description": "Request body for creating a comment",
+                "required": [
+                    "body"
+                ],
+                "properties": {
+                    "body": {
+                        "description": "The body of the comment",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateCommentRequest": {
+                "title": "Update Comment Request",
+                "description": "Request body for updating a comment",
+                "properties": {
+                    "body": {
+                        "description": "The body of the comment",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "PostResource": {
+                "title": "Post Resource",
+                "description": "Post resource model",
+                "properties": {
+                    "id": {
+                        "description": "ID of the post",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "body": {
+                        "description": "The body of the post",
+                        "type": "string"
+                    },
+                    "status": {
+                        "description": "The status of the post",
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "description": "Creation timestamp",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Last update timestamp",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "StorePostRequest": {
+                "title": "Store Post Request",
+                "description": "Request body for creating a post",
+                "required": [
+                    "body"
+                ],
+                "properties": {
+                    "body": {
+                        "description": "The body of the post",
+                        "type": "string"
+                    },
+                    "status": {
+                        "description": "The status of the post",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdatePostRequest": {
+                "title": "Update Post Request",
+                "description": "Request body for updating a post",
+                "properties": {
+                    "body": {
+                        "description": "The body of the post",
+                        "type": "string"
+                    },
+                    "status": {
+                        "description": "The status of the post",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Comments",
+            "description": "API Endpoints of Comments"
+        },
+        {
+            "name": "Posts",
+            "description": "API Endpoints of Posts"
+        },
+        {
+            "name": "Auth",
+            "description": "Auth"
+        }
+    ]
+}
