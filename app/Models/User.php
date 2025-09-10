@@ -60,12 +60,28 @@ class User extends Authenticatable
         return $this->hasMany(Comment::class);
     }
 
-    public function activeComments(): HasMany
+    public function getCommentsForActivePosts(): HasMany
     {
-        $activePostIds = $this->posts()->where('status', 'active')->pluck('id');
+        /**
+         * select u.id user_id, c.id comment_id, p.id post_id, p.status `status` from comments c
+         * left join posts p on p.id = c.commentable_id
+         * left join users u on u.id = c.user_id
+         * where
+         * u.id = 2
+         * and c.commentable_type = 'App\\Models\\Blog\\Post'
+         * and p.status = 'active'
+         */
+
+        return $this->hasMany(Comment::class)
+            ->whereHasMorph('commentable', [Post::class], function ($query) {
+                $query->where('status', 'active');
+                $query->where('user_id', $this->id);
+            });
+
+        /*$activePostIds = $this->posts()->where('status', 'active')->pluck('id');
 
         return $this->hasMany(Comment::class)
             ->whereIn('commentable_id', $activePostIds)
-            ->where('commentable_type', Post::class);
+            ->where('commentable_type', Post::class);*/
     }
 }

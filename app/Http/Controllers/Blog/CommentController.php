@@ -311,7 +311,7 @@ class CommentController extends Controller
      */
     public function getCommentsForActivePostsByUser(User $user): AnonymousResourceCollection
     {
-        $comments = $user->activeComments()->latest()->get();
+        $comments = $user->getCommentsForActivePosts()->latest()->get();
         return CommentResource::collection($comments);
     }
 
